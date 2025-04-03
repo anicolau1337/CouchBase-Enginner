@@ -1,0 +1,25 @@
+{
+    "type": "fulltext-index",
+    "name": "airport-search-index", 
+    "sourceType": "couchbase", 
+    "sourceName": "travel-sample",  
+    "planParams": {
+      "indexPartitions": 6  
+    },
+    "indexPartitions": 6,  
+    "fields": [
+      {
+        "name": "text", 
+        "type": "text"  
+      },
+      {
+        "name": "embedding", 
+        "type": "vector",  
+        "params": {
+          "vectorType": "dense", 
+          "dimensionality": 384 
+        }
+      }
+    ]
+  }
+  

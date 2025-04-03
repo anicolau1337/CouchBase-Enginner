@@ -11,8 +11,8 @@ cluster_uri = "couchbases://cb.xuvf8kmkcscdzr1l.cloud.couchbase.com"  # Couchbas
 username = "EngineerProject"
 password = "Testing0406!"
 bucket_name = "travel-sample"  # Travel Sample dataset
-scope_name = "<<replace with your scope name>>"
-collection_name = "<<replace with your collection name>>"
+scope_name = "inventory"
+collection_name = "airline"
 
 # Connect to Couchbase cluster
 auth = PasswordAuthenticator(username, password)
@@ -25,10 +25,20 @@ try:
 	cluster = Cluster(cluster_uri, options)
 	# Wait until the cluster is ready for use.
 	cluster.wait_until_ready(timedelta(seconds=5))
-	print(f"Successfully connected")
-except Exception as e:
-	traceback.print_exc()
-	print(f"Successfully missed")
+	bucket = cluster.bucket(bucket_name)
+	collection = bucket.scope(scope_name).collection(collection_name)
+	airport_data = cluster.query("SELECT * FROM `travel-sample`.inventory.airport LIMIT 10")
+	for row in airport_data:
+    # each row is an instance of the query call
+		try:
+			name = row["airport"]["airportname"]
+			callsign = row["airport"]["id"]
+			print(f"Airline name: {name}, id: {callsign}")
+			collection.upsert(callsign,f"Airline name: {name}")
+		except KeyError:
+			print("Row does not contain 'name' key")
+except CouchbaseException as e:
+	print(f"Error connecting to Couchbase: {str(e)}")
 	
 # # Test connection
 # try:
