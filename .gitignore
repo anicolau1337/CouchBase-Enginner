@@ -1,2 +1,4 @@
 venv/*
 local.env
+Project.py
+SenTransTest.py
